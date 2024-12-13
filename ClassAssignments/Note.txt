@@ -1,0 +1,21 @@
+1. Trong Opencv đọc ảnh theo định dạng BRG, cần lưu ý khi sử dụng hàm để hiển thị ảnh
+- imshow(): hiển thị ảnh theo dạng BRG nên hình ảnh hiển thị đúng màu sắc
+- plt.imshow(): hiển thị ảnh theo định dạng RGB nên để hiển thị đúng màu chúng ta cần chuyển đổi ảnh từ 
+BGR sang RGB bằng hàm:
+img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+Trong đó: Các tham số:
+- src: ảnh cần chuyển đổi
+- dst: ảnh sau khi chuyển đổi
+
+2. cv.LUT()
+Hàm cv.LUT() trong OpenCV được sử dụng để áp dụng một bảng tra cứu (lookup table) lên một ảnh. Điều này có nghĩa là mỗi giá trị pixel trong ảnh gốc sẽ được thay thế bằng giá trị tương ứng từ bảng tra cứu. Đây là cách hoạt động của hàm này:
+
+a. Đầu vào:
+img_2: Ảnh gốc mà bạn muốn áp dụng bảng tra cứu.
+lookUpTable: Bảng tra cứu chứa các giá trị mới cho mỗi giá trị pixel từ 0 đến 255.
+b. Quá trình:
+Hàm cv.LUT() sẽ duyệt qua từng pixel của img_2.
+Với mỗi giá trị pixel, hàm sẽ tra cứu giá trị mới từ lookUpTable và thay thế giá trị pixel đó bằng giá trị mới.
+Đầu ra:
+c. res: Ảnh kết quả sau khi áp dụng bảng tra cứu.
+
