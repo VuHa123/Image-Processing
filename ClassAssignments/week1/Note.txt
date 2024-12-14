@@ -7,7 +7,7 @@ Trong đó: Các tham số:
 - src: ảnh cần chuyển đổi
 - dst: ảnh sau khi chuyển đổi
 
-2. cv.LUT()
+2. cv.LUT()</home/vu_ha/Study/ImageProccing/ClassAssignments/week1/Adjust_brightness.ipynb>
 Hàm cv.LUT() trong OpenCV được sử dụng để áp dụng một bảng tra cứu (lookup table) lên một ảnh. Điều này có nghĩa là mỗi giá trị pixel trong ảnh gốc sẽ được thay thế bằng giá trị tương ứng từ bảng tra cứu. Đây là cách hoạt động của hàm này:
 
 a. Đầu vào:
@@ -18,4 +18,38 @@ Hàm cv.LUT() sẽ duyệt qua từng pixel của img_2.
 Với mỗi giá trị pixel, hàm sẽ tra cứu giá trị mới từ lookUpTable và thay thế giá trị pixel đó bằng giá trị mới.
 Đầu ra:
 c. res: Ảnh kết quả sau khi áp dụng bảng tra cứu.
+3. So sánh các kỹ thuật  tăng cường ảnh(Gamma, Brightness, contrast Adjust)
+a. Gamma Correction
+- Mục đích chính: Điều chỉnh độ sáng của ảnh theo cách phi tuyến, giúp cân bằng ánh sáng và chi tiết.
+- Ưu điểm:
++ Tương thích với cách mắt người cảm nhận ánh sáng: Giúp ảnh trông tự nhiên hơn, đặc biệt khi hiển thị trên các thiết bị.
++ Kiểm soát tốt cả vùng sáng và tối: Có thể tăng cường hoặc giảm độ sáng ở các vùng cụ thể mà không làm mất chi tiết.
++ Ứng dụng đa dạng: Phù hợp trong tăng cường dữ liệu, cải thiện chất lượng hình ảnh và chuẩn hóa ánh sáng.
+- Nhược điểm:
++ Phức tạp hơn: Yêu cầu tính toán phi tuyến, do đó chậm hơn so với các phương pháp tuyến tính.
++ Nhạy cảm với tham số gamma: Lựa chọn giá trị gamma không phù hợp có thể làm mất chi tiết hoặc gây nhiễu.
++ Không trực quan: Khó dự đoán kết quả mà không thử nghiệm.
+b. Adjust Brightness (Điều chỉnh độ sáng)
+- Mục đích chính: Thay đổi độ sáng toàn cục của ảnh bằng cách cộng hoặc trừ một giá trị cố định vào pixel.
+- Ưu điểm:
++ Dễ triển khai: Công thức đơn giản, chỉ cần cộng hoặc trừ giá trị.
+        𝐼new = 𝐼 + 𝑏
+        với b là giá trị thay đổi độ sáng.
++ Nhanh chóng: Tính toán tuyến tính, phù hợp cho xử lý thời gian thực.
++ Hiệu quả trong môi trường ánh sáng đồng đều: Khi ảnh chỉ cần được làm sáng hoặc tối đồng nhất.
+- Nhược điểm:
++ Không xử lý tốt ảnh có ánh sáng phức tạp: Thay đổi đồng đều có thể làm mất chi tiết ở vùng quá sáng hoặc quá tối.
++ Giới hạn khả năng tinh chỉnh chi tiết: Không phân biệt được các vùng sáng tối khác nhau.
+c. Adjust Contrast (Điều chỉnh độ tương phản)
+- Mục đích chính: Mở rộng hoặc thu hẹp sự khác biệt giữa các giá trị pixel sáng và tối, làm tăng độ "rõ nét" của ảnh.
+- Ưu điểm:
++ Tăng cường độ sắc nét của ảnh: Làm nổi bật các chi tiết quan trọng.
++ Phù hợp cho dữ liệu bị mờ nhạt: Ảnh hưởng tốt đến các ảnh thiếu tương phản.
++ Tùy chỉnh mức độ tương phản dễ dàng: Thay đổi hệ số 𝛼 trong công thức:
+    Inew =α⋅(I−mean)+mean
+- Nhược điểm:
++ Gây mất chi tiết ở vùng sáng hoặc tối cực đại: Quá nhiều tương phản có thể làm "cháy sáng" hoặc "đen tối" các vùng.
++ Không xử lý hiệu quả ánh sáng không đồng đều: Không giải quyết vấn đề trong ảnh có các vùng sáng/tối khác nhau.
++ Khó kiểm soát ở các dải sáng hẹp: Ảnh có dải cường độ hẹp (low dynamic range) dễ bị méo.
+
 
