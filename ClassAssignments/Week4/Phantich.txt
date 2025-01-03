@@ -1,0 +1,19 @@
+**Cơ chế hoạt động**
+1. Feature Detection and Matching: Đầu tiên, thuật toán sẽ xác định 
+các điểm đặc trưng (keypoints) trên mỗi hình ảnh, chẳng hạn như góc, 
+cạnh hoặc vùng có kết cấu rõ ràng. Sau đó, nó sẽ so sánh các điểm đặc 
+trưng này giữa các hình ảnh để tìm ra các cặp điểm tương ứng (matches).
+ Các thuật toán phổ biến được sử dụng trong bước này bao gồm SIFT, 
+ SURF và ORB.
+
+2. Homography Estimation: Khi đã có các cặp điểm tương ứng, thuật toán
+ sẽ tính toán một phép biến đổi hình học gọi là homography. Phép biến 
+ đổi này sẽ ánh xạ các điểm từ một hình ảnh sang hình ảnh khác, giúp 
+ căn chỉnh chúng một cách chính xác.
+
+3. Image Warping and Blending: Sử dụng homography đã tính toán, thuật 
+toán sẽ biến đổi (warp) một hoặc nhiều hình ảnh để chúng chồng lên 
+nhau một cách hoàn hảo. Cuối cùng, các hình ảnh được kết hợp (blend) 
+lại với nhau để tạo ra một bức ảnh toàn cảnh liền mạch. Các kỹ thuật 
+blending phổ biến bao gồm feathering và multi-band blending.
+

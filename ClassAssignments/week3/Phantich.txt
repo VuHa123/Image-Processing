@@ -1,0 +1,167 @@
+I. Image Classification from Scratch
+**Kiến trúc mạng**
+Kiến trúc: Mô hình được xây dựng dựa trên kiến trúc ResNet (Residual Network) kết hợp với Separable Convolution.
+
+Các thành phần chính:
+
+1. Khối Entry:
+
+- Rescaling: Chuẩn hóa giá trị pixel về khoảng [0, 1] bằng cách chia cho 255.
+- Conv2D: Lớp tích chập đầu tiên với 128 bộ lọc, kích thước kernel 3x3, stride 2, padding "same".
+- BatchNormalization: Chuẩn hóa batch để tăng tốc độ huấn luyện và ổn định mô hình.
+- Activation: Hàm kích hoạt ReLU.
+
+2. Các khối Residual:
+
+- Mô hình sử dụng vòng lặp để tạo ra các khối residual với kích thước bộ lọc tăng dần (256, 512, 728).
+- Mỗi khối residual bao gồm các lớp: Activation, SeparableConv2D, BatchNormalization, MaxPooling2D.
+- Separable Convolution: Tách tích chập không gian và tích chập theo chiều sâu để giảm số lượng tham số và tính toán.
+- Residual Connection: Kết nối đầu vào của khối với đầu ra, giúp giảm thiểu vấn đề gradient vanishing.
+
+3. Khối cuối:
+
+- SeparableConv2D: Lớp tích chập với 1024 bộ lọc.
+- BatchNormalization: Chuẩn hóa batch.
+- Activation: Hàm kích hoạt ReLU.
+- GlobalAveragePooling2D: Tính giá trị trung bình trên toàn bộ feature map.
+- Dropout: Ngẫu nhiên bỏ qua một số neuron để tránh overfitting.
+- Dense: Lớp fully connected với số units bằng 1 (vì bài toán phân loại nhị phân).
+- Activation: Không sử dụng hàm kích hoạt để trả về logits.
+
+Ưu điểm:
+
+ResNet: Giúp huấn luyện mô hình sâu hơn và giảm thiểu vấn đề gradient vanishing.
+Separable Convolution: Giảm số lượng tham số và tính toán so với tích chập thông thường.
+BatchNormalization: Tăng tốc độ huấn luyện và ổn định mô hình.
+Data Augmentation: Tăng cường dữ liệu để tránh overfitting.
+Nhược điểm:
+
+Mô hình có thể phức tạp và khó hiểu đối với người mới bắt đầu.
+Cần nhiều dữ liệu để huấn luyện hiệu quả.
+
+**Cơ chế hoạt động**
+
+Mô hình hoạt động theo các bước sau:
+
+1. Tiền xử lý dữ liệu:
+
+- Hình ảnh được đọc vào và resize về kích thước (180, 180).
+- Giá trị pixel được chuẩn hóa về khoảng [0, 1] bằng cách chia cho 255.
+- Tăng cường dữ liệu (data augmentation) được áp dụng trên tập huấn luyện để tăng tính đa dạng của dữ liệu, bao gồm lật hình ảnh theo chiều ngang và xoay ngẫu nhiên.
+
+2. Trích xuất đặc trưng:
+
+- Hình ảnh được đưa vào khối Entry để trích xuất các đặc trưng cơ bản.
+- Các khối Residual tiếp tục xử lý và trích xuất các đặc trưng phức tạp hơn ở các mức trừu tượng khác nhau.
+- Kết nối residual giúp kết hợp thông tin từ các lớp trước đó, giúp mô hình học được các đặc trưng sâu hơn.
+
+3. Phân loại:
+
+- Sau khi trích xuất đặc trưng, GlobalAveragePooling2D được sử dụng để tính giá trị trung bình trên toàn bộ feature map, tạo thành một vector đặc trưng đại diện cho hình ảnh.
+- Vector đặc trưng này được đưa vào lớp Dense để phân loại. Vì đây là bài toán phân loại nhị phân (chó hoặc mèo), lớp Dense có 1 unit và không sử dụng hàm kích hoạt, trả về logits.
+- Logits được đưa qua hàm sigmoid để tính xác suất hình ảnh thuộc về mỗi lớp (chó hoặc mèo).
+- Lớp có xác suất cao hơn sẽ được dự đoán là kết quả cuối cùng.
+
+
+II. Simple MNIST convert
+**Kiến trúc mạng**
+
+Mạng Nơ-ron Tích chập (CNN) được xây dựng bằng cách sử dụng Keras' Sequential API. Nó được thiết kế cho phân loại hình ảnh, đặc biệt là cho tập dữ liệu MNIST (chữ số viết tay).
+
+Dưới đây là phân tích chi tiết về kiến trúc:
+
+1. Lớp đầu vào:
+
+- keras.Input(shape=input_shape): Xác định lớp đầu vào, mong đợi hình ảnh có hình dạng input_shape, là (28, 28, 1) cho hình ảnh thang độ xám MNIST.
+2. Các lớp tích chập:
+
+- layers.Conv2D(32, kernel_size=(3, 3), activation="relu"): Lớp tích chập đầu tiên với 32 bộ lọc, mỗi bộ lọc sử dụng kernel 3x3. Nó áp dụng hàm kích hoạt ReLU cho đầu ra.
+- layers.Conv2D(64, kernel_size=(3, 3), activation="relu"): Lớp tích chập thứ hai với 64 bộ lọc, cũng sử dụng kernel 3x3 và kích hoạt ReLU.
+Các lớp này trích xuất các đặc trưng từ hình ảnh đầu vào bằng cách sử dụng các bộ lọc đã học.
+
+3. Các lớp gộp tối đa:
+
+- layers.MaxPooling2D(pool_size=(2, 2)): Hai lớp gộp tối đa với kích thước vùng gộp là 2x2. Các lớp này giảm mẫu các bản đồ đặc trưng, giảm kích thước không gian và độ phức tạp tính toán của chúng.
+
+4. Lớp làm phẳng:
+
+- layers.Flatten(): Chuyển đổi các bản đồ đặc trưng đa chiều thành một vectơ duy nhất, chuẩn bị dữ liệu cho các lớp được kết nối đầy đủ.
+
+5. Lớp Dropout:
+
+- layers.Dropout(0.5): Áp dụng điều chuẩn Dropout với tỷ lệ 0.5. Điều này sẽ ngẫu nhiên đặt một phần các đơn vị đầu vào thành 0 trong quá trình huấn luyện, giúp ngăn ngừa hiện tượng quá khớp.
+
+6. Lớp đầu ra:
+
+- layers.Dense(num_classes, activation="softmax"): Lớp được kết nối đầy đủ cuối cùng với num_classes (10 cho MNIST) đơn vị đầu ra. Nó sử dụng hàm kích hoạt softmax để tạo ra phân phối xác suất trên các lớp, đại diện cho xác suất dự đoán cho mỗi chữ số.
+
+**Cơ chế hoạt động**
+
+Nhận đầu vào: Mô hình nhận một hình ảnh chữ số viết tay dưới dạng ma trận pixel 28x28 làm đầu vào.
+
+Lớp tích chập 1: Lớp này áp dụng 32 bộ lọc tích chập lên hình ảnh đầu vào để trích xuất các đặc trưng như cạnh và góc. Các bộ lọc này trượt qua hình ảnh đầu vào, thực hiện phép nhân tích chập để tạo ra các bản đồ đặc trưng. Hàm kích hoạt ReLU được áp dụng cho đầu ra của lớp tích chập để đưa ra tính phi tuyến.
+
+Lớp Max Pooling 1: Lớp này giảm kích thước của các bản đồ đặc trưng bằng cách chọn giá trị pixel lớn nhất trong mỗi vùng 2x2. Điều này giúp giảm số lượng tham số trong mô hình và làm cho mô hình ít bị ảnh hưởng bởi các biến đổi nhỏ trong hình ảnh đầu vào.
+
+Lớp tích chập 2: Lớp này áp dụng 64 bộ lọc tích chập lên đầu ra của lớp max pooling trước đó để trích xuất các đặc trưng phức tạp hơn. Hàm kích hoạt ReLU được áp dụng cho đầu ra của lớp tích chập.
+
+Lớp Max Pooling 2: Lớp này giảm kích thước của các bản đồ đặc trưng hơn nữa bằng cách chọn giá trị pixel lớn nhất trong mỗi vùng 2x2.
+
+Lớp làm phẳng: Lớp này chuyển đổi đầu ra đa chiều của lớp max pooling trước đó thành một vectơ một chiều. Vectơ này được sử dụng làm đầu vào cho lớp được kết nối đầy đủ tiếp theo.
+
+Lớp Dropout: Lớp này ngẫu nhiên loại bỏ một số nút trong lớp được kết nối đầy đủ trong quá trình huấn luyện. Điều này giúp ngăn ngừa việc quá khớp bằng cách buộc mô hình học các đặc trưng mạnh mẽ hơn.
+
+Lớp được kết nối đầy đủ: Lớp này kết nối mọi nút trong lớp làm phẳng với mọi nút trong lớp đầu ra. Lớp này tính toán xác suất cho mỗi lớp đầu ra (0-9).
+
+Hàm kích hoạt Softmax: Hàm này được áp dụng cho đầu ra của lớp được kết nối đầy đủ để tạo ra phân phối xác suất trên 10 lớp đầu ra. Lớp đầu ra có xác suất cao nhất được dự đoán là lớp của hình ảnh đầu vào.
+
+III. Image classification via fine-tuning with EfficientNet.ipynb
+
+**Kiến trúc mạng**
+
+Code của bạn sử dụng kiến trúc EfficientNetB0 cho bài toán phân loại hình ảnh (cụ thể là phân loại giống chó trong tập dữ liệu Stanford Dogs). Nó được triển khai theo hai cách:
+
+1. Huấn luyện từ đầu (Training from scratch):
+
+Khởi tạo một mô hình EfficientNetB0 mới với weights=None.
+Tất cả các lớp của mô hình được huấn luyện với dữ liệu Stanford Dogs.
+Cách này tốn nhiều tài nguyên tính toán và thời gian hơn.
+
+2. Chuyển giao học (Transfer learning):
+
+Tải mô hình EfficientNetB0 được huấn luyện trước trên ImageNet với weights="imagenet".
+Đóng băng các lớp của mô hình được huấn luyện trước (model.trainable = False).
+Xây dựng lại phần đầu ra của mô hình với các lớp: GlobalAveragePooling2D, BatchNormalization, Dropout, và Dense (với số lớp đầu ra là NUM_CLASSES).
+Huấn luyện chỉ phần đầu ra mới được thêm vào.
+Mở khóa một số lớp trên cùng của mô hình (model.layers[-20:]) để fine-tune với dữ liệu Stanford Dogs.
+Cách này tận dụng kiến thức đã học từ ImageNet, giúp mô hình hội tụ nhanh hơn và hiệu quả hơn.
+
+**Cơ chế hoạt động**
+
+1. Chuẩn bị dữ liệu:
+
+Tải tập dữ liệu Stanford Dogs bằng tensorflow_datasets.
+Chia dữ liệu thành tập huấn luyện (ds_train) và tập kiểm tra (ds_test).
+Thay đổi kích thước ảnh về IMG_SIZE (224x224).
+Áp dụng Data Augmentation cho tập huấn luyện để tăng cường tính đa dạng của dữ liệu và ngăn ngừa overfitting. Các kỹ thuật Augmentation bao gồm xoay, dịch chuyển, lật, và thay đổi độ tương phản.
+Chuyển đổi nhãn thành dạng one-hot encoding.
+Chia dữ liệu thành các batch và prefetch để tối ưu hóa quá trình huấn luyện.
+2. Xây dựng mô hình:
+
+Training from scratch:
+Khởi tạo mô hình EfficientNetB0 mới với weights=None.
+Compile mô hình với optimizer Adam, loss function categorical crossentropy, và metrics accuracy.
+Transfer learning:
+Tải mô hình EfficientNetB0 được huấn luyện trước trên ImageNet với weights="imagenet".
+Đóng băng các lớp của mô hình được huấn luyện trước (model.trainable = False).
+Xây dựng phần đầu ra mới với các lớp GlobalAveragePooling2D, BatchNormalization, Dropout, và Dense.
+Compile mô hình.
+Sau đó, mở khóa một số lớp trên cùng để fine-tune với dữ liệu Stanford Dogs.
+3. Huấn luyện mô hình:
+
+Sử dụng model.fit để huấn luyện mô hình với tập huấn luyện (ds_train) và đánh giá trên tập kiểm tra (ds_test).
+Theo dõi quá trình huấn luyện bằng cách vẽ biểu đồ accuracy trên tập huấn luyện và tập kiểm tra.
+4. Đánh giá và dự đoán:
+
+Sau khi huấn luyện, mô hình có thể được sử dụng để dự đoán giống chó cho các hình ảnh mới.
+Đánh giá hiệu suất của mô hình bằng các metrics như accuracy.
