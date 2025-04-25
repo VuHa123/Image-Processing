@@ -1,0 +1,11 @@
+1. basic operation on Images
+2. Changing Colorspaces
+3. Image classification from scratch
+  - SimpleSimple MNIST convert
+  - Image classification via fine tuning with EfficientNet
+ 4. Image Stitching
+ 5. Image classification with vision transformer
+ - Ob Dectection using ViT
+ - Camera  Calibration
+ 6. Video classification with GRU
+ - Video Vision Transformer
